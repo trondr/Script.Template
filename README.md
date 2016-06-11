@@ -24,3 +24,7 @@ PowerShell script template
 8. To execute your script, run: YourScriptName.cmd "yourexampleparameter1"
 ![Output](../develop/doc/images/YourScriptOutput.png)
 9. Log file is located here: %public%\Logs\YourScriptName\YourScriptName-%USERNAME%.log
+
+## Example
+
+[AddCurrentUserToGroup.ps1](../develop/src/Script.Template/Example
