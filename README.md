@@ -27,4 +27,4 @@ PowerShell script template
 
 ## Example
 
-[AddCurrentUserToGroup.ps1](../develop/src/Script.Template/Example
+[AddCurrentUserToGroup.ps1](../develop/src/Script.Template/Example)
