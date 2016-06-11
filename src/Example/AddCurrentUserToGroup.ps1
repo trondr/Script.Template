@@ -1,19 +1,22 @@
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 
-$scriptVersion = "1.0.16163.1"
+$scriptVersion = "1.0.16163.2"
 
 function Run
 {
-	$exitCode = 0
-    $groupName = "Test-Group1"
+	$exitCode = 0    
     Try
     {
-        AddCurrentUserToGroup $groupName
-        #RemoveCurrentUserFromGroup $groupName
+        $groupName = "Test-Group1"
+        AddCurrentUserToGroup $groupName        
     }
     Catch
     {
-        $exitCode = 1     
+        
+        $errorMessage = $_.Exception.Message        
+        $exceptionName = $_.Exception.GetType().FullName
+        $logger.Error("Powershell script failed. Exception: $exceptionName. Error message: $errorMessage")
+        $exitCode = 1
     }
 	return $exitCode
 }

@@ -3,19 +3,29 @@ param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 $scriptVersion = "1.0.16163.0"
 
 function Run
-{
-    
-	$exitCode = 123
+{    
+	$exitCode = 0
 	
-    Write-Host "Example. Your script code here."
-    Write-Host "Example. Input arguments: arg1=$arg1, arg2=$arg2, arg3=$arg3, arg4=$arg4, arg5=$arg5, arg6=$arg6, arg7=$arg7, arg8=$arg8, arg9=$arg9"
-    $logger.Info("Example. info message written to log file")
-    $logger.Error("Example. error message written to log file")
-    $logger.Warn("Example. warning message written to log file")
-
+    Try
+    {
+        Write-Host "Example. Your script code here."
+        Write-Host "Example. Input arguments: arg1=$arg1, arg2=$arg2, arg3=$arg3, arg4=$arg4, arg5=$arg5, arg6=$arg6, arg7=$arg7, arg8=$arg8, arg9=$arg9"
+        $logger.Info("Example. info message written to log file")
+        $logger.Warn("Example. warning message written to log file")
+        $logger.Error("Example. error message written to log file")
+        SomeExampleUserFunctionThrowsError
+    }
+    Catch
+    {
+        
+        $errorMessage = $_.Exception.Message        
+        $exceptionName = $_.Exception.GetType().FullName
+        $logger.Error("Powershell script failed. Exception: $exceptionName. Error message: $errorMessage")
+        $exitCode = 1
+    }
+    
 	return $exitCode
 }
-
 
 ###############################################################################
 #
