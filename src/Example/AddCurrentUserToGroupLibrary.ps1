@@ -1,10 +1,17 @@
+# AddCurrentUserToGroupLibrary.ps1 1.0.16163.2
+# 
+# Copyright (C) 2016 github.com/trondr
+#
+# All rights reserved.
+# 
+# License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
+#
 
 # User specified functions for use in the main script can be defined in this file.
 
-
 ###############################################################################
 #
-#   Inline C# class for handling Ad group operations
+#   Inline C#.NET class for handling Ad group operations
 #
 ###############################################################################
 $adOperationsClass = @'
@@ -103,12 +110,6 @@ Add-Type -TypeDefinition $adOperationsClass -Language CSharpVersion3 -Referenced
 #   Functions using the inline C# AdOperations class
 #
 ###############################################################################
-
-#function GetUserDistinguishedName([string] $userName)
-#{
-#    $userDn = [AdOperations]::GetUserDistinguishedName($userName)
-#    return $userDn
-#}
 
 function GetCurrentUserDistinguishedName
 {

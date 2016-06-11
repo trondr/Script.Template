@@ -1,3 +1,11 @@
+# Script.Template.Library 1.0.16163.1
+# 
+# Copyright (C) 2016 github.com/trondr
+#
+# All rights reserved.
+# 
+# License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
+
 function ExecuteAction([scriptblock]$action)
 {
     $exitCode = & $action
@@ -57,7 +65,6 @@ function CreateFolder([string] $folder)
         $directoryInfo = [System.IO.Directory]::CreateDirectory($folder);
     }
 }
-
 
 ConfigureAppConfig
 ConfigureLogging

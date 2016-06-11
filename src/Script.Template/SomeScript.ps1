@@ -1,3 +1,12 @@
+# Script.Template 1.0.16163.1
+# 
+# Copyright (C) 2016 github.com/trondr
+#
+# All rights reserved.
+# 
+# License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
+#
+
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 
 $scriptVersion = "1.0.16163.0"
