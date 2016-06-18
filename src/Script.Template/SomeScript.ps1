@@ -1,4 +1,4 @@
-# Script.Template 1.0.16171.1
+# Script.Template 1.0.16171.0
 # 
 # Copyright (C) 2016 github.com/trondr
 #

@@ -1,4 +1,4 @@
-# Script.Template.Library 1.0.16163.1
+# Script.Template.Library 1.0.16171.0
 # 
 # Copyright (C) 2016 github.com/trondr
 #
@@ -102,10 +102,17 @@ function GetLogFile()
     return $logFile;
 }
 
+function GetLog4NetDll
+{
+    $log4NetDll = [System.IO.Path]::Combine($global:scriptFolder,"Libs","log4net.dll")
+    Write-Verbose "log4NetDll: $log4NetDll"
+    return $log4NetDll
+}
+
 function ConfigureLogging
 {
     Write-Verbose "Configuring logging...";
-    $log4NetDll = [System.IO.Path]::Combine($global:scriptFolder,"Libs","log4net.dll")
+    $log4NetDll = GetLog4NetDll
     $library = LoadLibrary $log4NetDll
     if($library -eq $null)
     {
