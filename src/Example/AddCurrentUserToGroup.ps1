@@ -1,4 +1,4 @@
-# AddCurrentUserToGroup.ps1 1.0.16163.2
+# Script.Template 1.0.16171.0
 # 
 # Copyright (C) 2016 github.com/trondr
 #
@@ -8,6 +8,23 @@
 #
 
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
+
+###############################################################################
+#
+#   Powershell logging preference
+#
+###############################################################################
+$global:VerbosePreference = "Continue"
+$global:DebugPreference = "SilentlyContinue"
+$global:WarningPreference = "Continue"
+$global:ErrorActionPreference = "Continue"
+$global:ProgressPreference = "Continue"
+
+###############################################################################
+#
+#   Your code below this line
+#
+###############################################################################
 
 $scriptVersion = "1.0.16163.2"
 
@@ -32,81 +49,44 @@ function Run
 
 ###############################################################################
 #
-#   Powershell logging preference
+#   Your code above this line
 #
 ###############################################################################
-$global:VerbosePreference = "SilentlyContinue"
-$global:DebugPreference = "SilentlyContinue"
-$global:WarningPreference = "Continue"
-$global:ErrorActionPreference = "Continue"
-$global:ProgressPreference = "Continue"
+
 
 ###############################################################################
 #
 #   Start: Main Script - DO NOT CHANGE
 #
 ###############################################################################
+
+###############################################################################
+#
+#   Loading template script library, that:
+#
+#      1. Configures logging
+#      2. Loads user script library
+#      3. Executes Run function
+#
+###############################################################################
+
 $global:script = $MyInvocation.MyCommand.Definition
-Write-Verbose "Script=$script"
 $global:scriptFolder = Split-Path -Parent $script
-Write-Verbose "ScriptFolder=$scriptFolder"
-$global:scriptName = [System.IO.Path]::GetFileNameWithoutExtension($script)
-Write-Verbose "ScriptName=$scriptName"
-
-###############################################################################
-#   Log file configuration
-###############################################################################
-$global:logFolder = [System.IO.Path]::Combine($env:PUBLIC, "Logs", $scriptName)
-$userName = $env:USERNAME
-$global:logFile = [System.IO.Path]::Combine($global:LogFolder, "$scriptName-$userName.log");
-
-###############################################################################
-#   Loading template script library
-###############################################################################
 $scriptLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
 if((Test-Path $scriptLibrary) -eq $false)
 {
     Write-Host -ForegroundColor Red "Script library '$scriptLibrary' not found."
     EXIT 1
 }
-Write-Verbose "ScriptLibrary=$scriptLibrary"
-Write-Verbose "Loading script library '$scriptLibrary'..."
+Write-Verbose "Loading and running script library '$scriptLibrary'..."
 . $scriptLibrary
 If ($? -eq $false) 
 { 
     Write-Host -ForegroundColor Red "Failed to load library '$scriptLibrary'. Error: $($error[0])"; break 
     EXIT 1
 };
+exit $global:scriptExitCode
 
-###############################################################################
-#   Loading user script library
-###############################################################################
-$scriptLibrary = [System.IO.Path]::Combine($scriptFolder ,"$($scriptName)Library.ps1")
-if((Test-Path $scriptLibrary) -eq $false)
-{
-    Write-Host -ForegroundColor Red "Script library '$scriptLibrary' not found."
-    EXIT 1
-}
-Write-Verbose "ScriptLibrary=$scriptLibrary"
-Write-Verbose "Loading script library '$scriptLibrary'..."
-. $scriptLibrary
-If ($? -eq $false) 
-{ 
-    Write-Host -ForegroundColor Red "Failed to load library '$scriptLibrary'. Error: $($error[0])"; break 
-    EXIT 1
-};
-
-###############################################################################
-#   Run user script
-###############################################################################
-$global:commandLine = [System.Environment]::CommandLine
-$logger.Info("Start: $scriptName $scriptVersion Command line: $commandLine");
-
-$exitCode = ExecuteAction([scriptblock]$function:Run)
-
-$logger.Info("Stop: $scriptName $scriptVersion Exit code: $exitCode");
-
-exit $exitCode
 ###############################################################################
 #
 #   End: Main Script - DO NOT CHANGE

@@ -102,6 +102,7 @@ public class AdOperations
     }
 }
 '@
+$log4NetDll = GetLog4NetDll
 $referencedAssemblies = "System.DirectoryServices.dll", "System.DirectoryServices.AccountManagement.dll" , $log4NetDll
 Add-Type -TypeDefinition $adOperationsClass -Language CSharpVersion3 -ReferencedAssemblies $referencedAssemblies
 
