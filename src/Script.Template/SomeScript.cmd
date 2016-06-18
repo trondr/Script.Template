@@ -64,13 +64,13 @@ goto FAILED
 
 :FAILED
 @Echo ------------------------------------------------------------------------
-@Echo Stop: Script failed with exit code %EXITCODE%
+@Echo Stop: Script returned with exit code %EXITCODE%
 @Echo ------------------------------------------------------------------------
 EXIT /B %EXITCODE%
 
 :SUCCESS
 @Echo ------------------------------------------------------------------------
-@Echo Stop: Script suceeded with exit code %EXITCODE%
+@Echo Stop: Script returned with exit code %EXITCODE%
 @Echo ------------------------------------------------------------------------
 EXIT /B %EXITCODE%
 @REM ###############################################################################
