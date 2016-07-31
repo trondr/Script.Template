@@ -176,6 +176,18 @@ $logger.Info("Start: $scriptName $scriptVersion Command line: $commandLine");
 
 $global:scriptExitCode = ExecuteAction([scriptblock]$function:Run)
 
-$errorMessage = GetErrorMessage($scriptExitCode)
-$logger.Info("Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)");
+$successExitCode = [int]0
+$expectedExitCodeType = $successExitCode.GetType()
+$exitCodeType = $scriptExitCode.GetType()
+if($exitCodeType.Name -eq $expectedExitCodeType.Name)
+{
+    $errorMessage = GetErrorMessage($scriptExitCode)    
+    $logger.Info("Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)");
+}
+else
+{
+    $global:scriptExitCode = 1
+    $errorMessage = "The Run() function did not return an exit code of type System.Int32. Please make sure that any code lines in Run() function is not returning '$exitCodeType' and there by intercepts the return statement."
+    $logger.Error("Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)");
+}
 Write-Verbose "Finished executing user script, Run().";
