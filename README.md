@@ -27,4 +27,8 @@ PowerShell script template
 
 ## Example
 
-[AddCurrentUserToGroup.ps1](../master/src/Example)
+* [AddCurrentUserToGroup.ps1](../master/src/Examples/AddCurrentUserToGroup)
+This script supports adding current user to a specified Active Directory group
+
+*[SetWallPaperWithText.ps1](../master/src/Examples/SetWallPaperWithText)
+Write a text (spesified in a text file) to the copy of an image and then set the resulting image as wallpaper. The script uses a inline C# class utilizing the ImageMagick .NET library Magick.NET
