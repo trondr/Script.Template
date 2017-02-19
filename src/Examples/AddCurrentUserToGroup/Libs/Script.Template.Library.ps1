@@ -1,4 +1,4 @@
-# Script.Template.Library 1.0.16171.0
+# Script.Template.Library 1.0.17050.0
 # 
 # Copyright (C) 2016 github.com/trondr
 #
@@ -87,7 +87,14 @@ function ConfigureAppConfig()
 
 function GetLogFolder()
 {
-    $logFolder = [System.IO.Path]::Combine($env:PUBLIC, "Logs", $global:scriptName);
+    if($storeLogFilesInPublicLogsFolder -eq $true)
+    {
+        $logFolder = [System.IO.Path]::Combine($env:Public, "Logs", $global:remoteScriptName);
+    }
+    else
+    {
+        $logFolder = [System.IO.Path]::Combine($remoteScriptFolder, "Logs");
+    }
     CreateFolder $logFolder;
     return $logFolder;
 }

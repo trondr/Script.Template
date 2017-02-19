@@ -1,11 +1,10 @@
-# Script.Template 1.0.16171.0
+# Script.Template 1.0.17050.1
 # 
-# Copyright (C) 2016 github.com/trondr
+# Copyright (C) 2016-2017 github.com/trondr
 #
 # All rights reserved.
 # 
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
-#
 
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 
@@ -14,7 +13,7 @@ param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 #   Powershell logging preference
 #
 ###############################################################################
-$global:VerbosePreference = "Continue"
+$global:VerbosePreference = "SilentlyContinue"
 $global:DebugPreference = "SilentlyContinue"
 $global:WarningPreference = "Continue"
 $global:ErrorActionPreference = "Continue"
@@ -22,11 +21,21 @@ $global:ProgressPreference = "Continue"
 
 ###############################################################################
 #
+#   Log folder preference
+#
+#      $false : Store logs in "<scriptfolder>\Logs"
+#      $true  : Store logs in "%Public%\Logs\<script name>"
+#
+###############################################################################
+$global:storeLogFilesInPublicLogsFolder = $false
+
+###############################################################################
+#
 #   Your code below this line
 #
 ###############################################################################
 
-$scriptVersion = "1.0.16163.2"
+$global:scriptVersion = "1.0.17050.1"
 
 function Run
 {
@@ -69,7 +78,9 @@ function Run
 #      3. Executes Run function
 #
 ###############################################################################
-
+$global:remoteScriptName = $env:ScriptName
+$global:remoteScriptFolder = $env:ScriptFolder
+$global:localScriptFolder = $env:LocalScriptFolder
 $global:script = $MyInvocation.MyCommand.Definition
 $global:scriptFolder = Split-Path -Parent $script
 $scriptLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")

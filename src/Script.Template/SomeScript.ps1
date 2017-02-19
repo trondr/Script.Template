@@ -1,11 +1,10 @@
-# Script.Template 1.0.16171.0
+# Script.Template 1.0.17050.1
 # 
-# Copyright (C) 2016 github.com/trondr
+# Copyright (C) 2016-2017 github.com/trondr
 #
 # All rights reserved.
 # 
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
-#
 
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
 
@@ -22,11 +21,21 @@ $global:ProgressPreference = "Continue"
 
 ###############################################################################
 #
+#   Log folder preference
+#
+#      $false : Store logs in "<scriptfolder>\Logs"
+#      $true  : Store logs in "%Public%\Logs\<script name>"
+#
+###############################################################################
+$global:storeLogFilesInPublicLogsFolder = $false
+
+###############################################################################
+#
 #   Your code below this line
 #
 ###############################################################################
 
-$global:scriptVersion = "1.0.16171.0"
+$global:scriptVersion = "1.0.17050.1"
 
 function Run
 {    
@@ -37,7 +46,7 @@ function Run
         Write-Host "Example. Your script code here."
         Write-Host "Example. Input arguments: arg1=$arg1, arg2=$arg2, arg3=$arg3, arg4=$arg4, arg5=$arg5, arg6=$arg6, arg7=$arg7, arg8=$arg8, arg9=$arg9"
         $dayOfYear = [System.DateTime]::Now.DayOfYear
-        $logger.Info("Example. info message written to log file. Day of year: $dayOfYear")
+        $logger.Info("Example. info message written to log file. Day of year: $dayOfYear")        
         $logger.Warn("Example. warning message written to log file")
         $logger.Error("Example. error message written to log file")        
         SomeExampleUserFunctionThrowsError
@@ -49,8 +58,7 @@ function Run
         $exceptionName = $_.Exception.GetType().FullName
         $logger.Error("Example. Powershell script failed. Exception: $exceptionName. Error message: $errorMessage")
         $exitCode = 2
-    }
-    
+    }   
 	return $exitCode
 }
 ###############################################################################
@@ -75,7 +83,9 @@ function Run
 #      3. Executes Run function
 #
 ###############################################################################
-
+$global:remoteScriptName = $env:ScriptName
+$global:remoteScriptFolder = $env:ScriptFolder
+$global:localScriptFolder = $env:LocalScriptFolder
 $global:script = $MyInvocation.MyCommand.Definition
 $global:scriptFolder = Split-Path -Parent $script
 $scriptLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
