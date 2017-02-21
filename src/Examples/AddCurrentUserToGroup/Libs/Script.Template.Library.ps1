@@ -1,10 +1,12 @@
-# Script.Template.Library 1.0.17050.0
+# Script.Template.Library 1.0.17052.2
 # 
-# Copyright (C) 2016 github.com/trondr
+# Copyright (C) 2016-2017 github.com/trondr
 #
 # All rights reserved.
 # 
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
+
+Set-StrictMode -Version Latest
 
 ###############################################################################
 #
@@ -19,6 +21,77 @@ function ExecuteAction([scriptblock]$action)
     return $exitCode
 }
 
+function LogInfo
+{
+    param($message)
+
+    if($logger.IsInfoEnabled)
+    {
+        if($psISE -ne $null)
+        {
+            Write-Host $message -BackgroundColor Green -ForegroundColor White
+        }    
+        $logger.Info($message)
+    }    
+}
+
+function LogWarning
+{
+    param($message)
+
+    if($logger.IsWarnEnabled)
+    {
+        if($psISE -ne $null)
+        {
+            Write-Host $message -BackgroundColor Yellow -ForegroundColor Red
+        }    
+        $logger.Warn($message)
+    }    
+}
+
+function LogError
+{
+    param($message)
+
+    if($logger.IsErrorEnabled)
+    {
+        if($psISE -ne $null)
+        {
+            Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
+        }    
+        $logger.Error($message)
+    }    
+}
+
+function LogFatal
+{
+    param($message)
+
+    if($logger.IsFatalEnabled)
+    {
+        if($psISE -ne $null)
+        {
+            Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
+        }    
+        $logger.Fatal($message)
+    }    
+}
+
+function LogDebug
+{
+    param($message)
+
+    if($logger.IsDebugEnabled)
+    {
+        if($psISE -ne $null)
+        {
+            Write-Host $message -BackgroundColor Blue -ForegroundColor White
+        }    
+        $logger.Debug($message)
+    }    
+}
+
+
 function GetScriptFolder
 {
     $scriptFolder = Split-Path -Parent $global:script
@@ -26,11 +99,32 @@ function GetScriptFolder
     return $scriptFolder
 }
 
+function GetRemoteScriptFolder
+{
+    $remoteScriptFolder = $env:ScriptFolder
+    Write-Verbose "From Environment (ScriptFolder): RemoteScriptFolder=$remoteScriptFolder"
+    return $remoteScriptFolder
+}
+
+function GetLocalScriptFolder
+{        
+    $localScriptFolder = $env:LocalScriptFolder
+    Write-Verbose "From Environment (LocalScriptFolder): LocalScriptFolder=$localScriptFolder"
+    return $localScriptFolder
+}
+
 function GetScriptName
 {
     $scriptName = [System.IO.Path]::GetFileNameWithoutExtension($global:script)
     Write-Verbose "ScriptName=$scriptName"
     return $scriptName
+}
+
+function GetRemoteScriptName
+{
+    $remoteScriptName = $env:ScriptName
+    Write-Verbose "From Environment (ScriptName): RemoteScriptName=$remoteScriptName"
+    return $remoteScriptName
 }
 
 function LoadLibrary([string]$libraryFilePath)
@@ -87,15 +181,24 @@ function ConfigureAppConfig()
 
 function GetLogFolder()
 {
-    if($storeLogFilesInPublicLogsFolder -eq $true)
-    {
-        $logFolder = [System.IO.Path]::Combine($env:Public, "Logs", $global:remoteScriptName);
-    }
-    else
-    {
+    $scriptName = GetScriptName
+    $logFolder = [System.IO.Path]::Combine([System.IO.Path]::Combine($env:Public, "Logs"), $scriptName);
+    $remoteScriptFolder = GetRemoteScriptFolder
+    if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($remoteScriptFolder)))
+    {    
         $logFolder = [System.IO.Path]::Combine($remoteScriptFolder, "Logs");
     }
-    CreateFolder $logFolder;
+    $scriptFolder = GetScriptFolder
+    if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($scriptFolder)))
+    {    
+        $logFolder = [System.IO.Path]::Combine($scriptFolder, "Logs");
+    }
+    if( ([System.IO.Path]::IsPathRooted($logFolder)) -eq $false)
+    {
+        Write-Host "Log folder '$logFolder' is not a full path."  -ForegroundColor Red
+        throw [System.IO.DirectoryNotFoundException] "Directory not found: $logFolder"
+    }
+    CreateFolder $logFolder;  
     return $logFolder;
 }
 
@@ -104,14 +207,14 @@ function GetLogFile()
     $logFolder = GetLogFolder
     $userName = $env:USERNAME
     $scriptName = GetScriptName
-    $logFile = [System.IO.Path]::Combine($LogFolder, "$scriptName-$userName.log");
+    $logFile = [System.IO.Path]::Combine($logFolder, "$scriptName-$userName.log");
     Write-Host "Log file: $logFile"
     return $logFile;
 }
 
 function GetLog4NetDll
 {
-    $log4NetDll = [System.IO.Path]::Combine($global:scriptFolder,"Libs","log4net.dll")
+    $log4NetDll = [System.IO.Path]::Combine([System.IO.Path]::Combine($global:scriptFolder,"Libs"),"log4net.dll")
     Write-Verbose "log4NetDll: $log4NetDll"
     return $log4NetDll
 }
@@ -178,8 +281,9 @@ If ($? -eq $false)
 #
 ###############################################################################
 Write-Verbose "Executing user script, Run()...";
+Write-Verbose "CLR runtime version: $([System.Environment]::Version)";
 $commandLine = [System.Environment]::CommandLine
-$logger.Info("Start: $scriptName $scriptVersion Command line: $commandLine");
+LogInfo "Start: $scriptName $scriptVersion Command line: $commandLine"
 
 $global:scriptExitCode = ExecuteAction([scriptblock]$function:Run)
 
@@ -189,12 +293,12 @@ $exitCodeType = $scriptExitCode.GetType()
 if($exitCodeType.Name -eq $expectedExitCodeType.Name)
 {
     $errorMessage = GetErrorMessage($scriptExitCode)    
-    $logger.Info("Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)");
+    LogInfo "Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)"
 }
 else
 {
     $global:scriptExitCode = 1
     $errorMessage = "The Run() function did not return an exit code of type System.Int32. Please make sure that any code lines in Run() function is not returning '$exitCodeType' and there by intercepts the return statement."
-    $logger.Error("Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)");
+    LogError "Stop: $scriptName $scriptVersion Exit code: $scriptExitCode ($errorMessage)"
 }
 Write-Verbose "Finished executing user script, Run().";

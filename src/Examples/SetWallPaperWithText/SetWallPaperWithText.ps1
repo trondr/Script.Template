@@ -1,4 +1,4 @@
-# Script.Template 1.0.17050.1
+# Script.Template 1.0.17052.2
 # 
 # Copyright (C) 2016-2017 github.com/trondr
 #
@@ -7,6 +7,8 @@
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
 
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
+
+Set-StrictMode -Version Latest
 
 ###############################################################################
 #
@@ -35,7 +37,7 @@ $global:storeLogFilesInPublicLogsFolder = $false
 #
 ###############################################################################
 
-$global:scriptVersion = "1.0.17050.1"
+$global:scriptVersion = "1.0.17052.2"
 
 function Run
 {
@@ -102,22 +104,19 @@ function Run
 #      3. Executes Run function
 #
 ###############################################################################
-$global:remoteScriptName = $env:ScriptName
-$global:remoteScriptFolder = $env:ScriptFolder
-$global:localScriptFolder = $env:LocalScriptFolder
 $global:script = $MyInvocation.MyCommand.Definition
 $global:scriptFolder = Split-Path -Parent $script
-$scriptLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
-if((Test-Path $scriptLibrary) -eq $false)
+$scriptTemplateLibrary = [System.IO.Path]::Combine([System.IO.Path]::Combine($scriptFolder, "Libs"), "Script.Template.Library.ps1")
+if((Test-Path $scriptTemplateLibrary) -eq $false)
 {
-    Write-Host -ForegroundColor Red "Script library '$scriptLibrary' not found."
+    Write-Host -ForegroundColor Red "Script template library '$scriptTemplateLibrary' not found."
     EXIT 1
 }
-Write-Verbose "Loading and running script library '$scriptLibrary'..."
-. $scriptLibrary
+Write-Verbose "Loading and running script template library '$scriptTemplateLibrary'..."
+. $scriptTemplateLibrary
 If ($? -eq $false) 
 { 
-    Write-Host -ForegroundColor Red "Failed to load library '$scriptLibrary'. Error: $($error[0])"; break 
+    Write-Host -ForegroundColor Red "Failed to load script template library '$scriptTemplateLibrary'. Error: $($error[0])"; break 
     EXIT 1
 };
 exit $global:scriptExitCode

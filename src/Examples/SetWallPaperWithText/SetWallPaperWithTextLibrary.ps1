@@ -6,7 +6,7 @@
 # 
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
 #
-
+Set-StrictMode -Version Latest
 # User specified functions for use in the main script can be defined in this file.
 
 
