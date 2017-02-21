@@ -1,4 +1,4 @@
-# Script.Template 1.0.17050.1
+# Script.Template 1.0.17052.2
 # 
 # Copyright (C) 2016-2017 github.com/trondr
 #
@@ -7,6 +7,8 @@
 # License: New BSD (https://github.com/trondr/Script.Template/blob/master/LICENSE.md)
 
 param ($arg1, $arg2, $arg3, $arg4, $arg5, $arg6, $arg7, $arg8, $arg9)
+
+Set-StrictMode -Version Latest
 
 ###############################################################################
 #
@@ -35,30 +37,31 @@ $global:storeLogFilesInPublicLogsFolder = $false
 #
 ###############################################################################
 
-$global:scriptVersion = "1.0.17050.1"
+$global:scriptVersion = "1.0.17052.2"
 
 function Run
 {    
 	$exitCode = 0
 	
     Try
-    {
-        Write-Host "Example. Your script code here."
-        Write-Host "Example. Input arguments: arg1=$arg1, arg2=$arg2, arg3=$arg3, arg4=$arg4, arg5=$arg5, arg6=$arg6, arg7=$arg7, arg8=$arg8, arg9=$arg9"
+    {        
+        LogInfo "Example. Your script code here."
+        LogInfo "Example. Input arguments: arg1=$arg1, arg2=$arg2, arg3=$arg3, arg4=$arg4, arg5=$arg5, arg6=$arg6, arg7=$arg7, arg8=$arg8, arg9=$arg9"
         $dayOfYear = [System.DateTime]::Now.DayOfYear
-        $logger.Info("Example. info message written to log file. Day of year: $dayOfYear")        
-        $logger.Warn("Example. warning message written to log file")
-        $logger.Error("Example. error message written to log file")        
+        LogInfo "Example. info message written to log file. Day of year: $dayOfYear"
+        LogWarning "Example. warning message written to log file"
+        LogError "Example. error message written to log file"
+        LogDebug "Example. debug message written to log file"        
+        LogFatal "Example. fatal message written to log file"
         SomeExampleUserFunctionThrowsError
     }
     Catch
-    {
-        
+    {        
         $errorMessage = $_.Exception.Message        
         $exceptionName = $_.Exception.GetType().FullName
-        $logger.Error("Example. Powershell script failed. Exception: $exceptionName. Error message: $errorMessage")
-        $exitCode = 2
-    }   
+        LogError "Example. Powershell script failed. Exception: $exceptionName. Error message: $errorMessage Line: $($_.InvocationInfo.ScriptLineNumber) Script: $($_.InvocationInfo.ScriptName)"
+        $exitCode = 1
+    }
 	return $exitCode
 }
 ###############################################################################
@@ -83,22 +86,19 @@ function Run
 #      3. Executes Run function
 #
 ###############################################################################
-$global:remoteScriptName = $env:ScriptName
-$global:remoteScriptFolder = $env:ScriptFolder
-$global:localScriptFolder = $env:LocalScriptFolder
 $global:script = $MyInvocation.MyCommand.Definition
 $global:scriptFolder = Split-Path -Parent $script
-$scriptLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
-if((Test-Path $scriptLibrary) -eq $false)
+$scriptTemplateLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
+if((Test-Path $scriptTemplateLibrary) -eq $false)
 {
-    Write-Host -ForegroundColor Red "Script library '$scriptLibrary' not found."
+    Write-Host -ForegroundColor Red "Script template library '$scriptTemplateLibrary' not found."
     EXIT 1
 }
-Write-Verbose "Loading and running script library '$scriptLibrary'..."
-. $scriptLibrary
+Write-Verbose "Loading and running script template library '$scriptTemplateLibrary'..."
+. $scriptTemplateLibrary
 If ($? -eq $false) 
 { 
-    Write-Host -ForegroundColor Red "Failed to load library '$scriptLibrary'. Error: $($error[0])"; break 
+    Write-Host -ForegroundColor Red "Failed to load script template library '$scriptTemplateLibrary'. Error: $($error[0])"; break 
     EXIT 1
 };
 exit $global:scriptExitCode
