@@ -88,7 +88,7 @@ function Run
 ###############################################################################
 $global:script = $MyInvocation.MyCommand.Definition
 $global:scriptFolder = Split-Path -Parent $script
-$scriptTemplateLibrary = [System.IO.Path]::Combine($scriptFolder, "Libs", "Script.Template.Library.ps1")
+$scriptTemplateLibrary = [System.IO.Path]::Combine([System.IO.Path]::Combine($scriptFolder, "Libs"), "Script.Template.Library.ps1")
 if((Test-Path $scriptTemplateLibrary) -eq $false)
 {
     Write-Host -ForegroundColor Red "Script template library '$scriptTemplateLibrary' not found."

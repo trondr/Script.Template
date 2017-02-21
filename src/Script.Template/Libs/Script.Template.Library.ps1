@@ -182,7 +182,7 @@ function ConfigureAppConfig()
 function GetLogFolder()
 {
     $scriptName = GetScriptName
-    $logFolder = [System.IO.Path]::Combine($env:Public, "Logs", $scriptName);
+    $logFolder = [System.IO.Path]::Combine([System.IO.Path]::Combine($env:Public, "Logs"), $scriptName);
     $remoteScriptFolder = GetRemoteScriptFolder
     if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($remoteScriptFolder)))
     {    
@@ -214,7 +214,7 @@ function GetLogFile()
 
 function GetLog4NetDll
 {
-    $log4NetDll = [System.IO.Path]::Combine($global:scriptFolder,"Libs","log4net.dll")
+    $log4NetDll = [System.IO.Path]::Combine([System.IO.Path]::Combine($global:scriptFolder,"Libs"),"log4net.dll")
     Write-Verbose "log4NetDll: $log4NetDll"
     return $log4NetDll
 }
