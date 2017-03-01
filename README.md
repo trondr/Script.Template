@@ -17,9 +17,11 @@ PowerShell script template
 3. Rename SomeScript.config -> YourScript.config
 4. Rename SomeScript.ps1 -> YourScript.ps1
 5. Rename SomeScriptLibrary.ps1 -> YourScriptLibrary.ps1
+
 ![](./doc/images/CopyAndRenameTemplate.png)
 6. Rename Messages\SomeScriptMessages.psd1 -> Messages\YourScriptMessages.psd1
 7. Rename Messages\<culture>\SomeScriptMessages.psd1 -> Messages\<culture>\YourScriptMessages.psd1
+
 ![](./doc/images/CopyAndRenameTemplate-Messages.png)
 8. Develop your code in the Run function in YourScript.ps1. Make sure to return a relevant exit code. Exit code 0 is normally regarded as success. Also consider updating the script version.
 ![](./doc/images/MainScript.png)
