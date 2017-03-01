@@ -1,4 +1,4 @@
-# Script.Template 1.0.17052.2
+# Script.Template 1.0.17060.3
 # 
 # Copyright (C) 2016-2017 github.com/trondr
 #
@@ -37,7 +37,7 @@ $global:storeLogFilesInPublicLogsFolder = $false
 #
 ###############################################################################
 
-$global:scriptVersion = "1.0.17052.2"
+$global:scriptVersion = "1.0.17060.3"
 
 function Run
 {    
@@ -53,6 +53,29 @@ function Run
         LogError "Example. error message written to log file"
         LogDebug "Example. debug message written to log file"        
         LogFatal "Example. fatal message written to log file"
+        
+        #Get localized message for en-US
+        $culture = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
+        $helloMessage = (GetMessage $culture "Hello_F1" "Default Hello {0}") -f "Ola"        
+        LogInfo $helloMessage
+        $byeMessage = (GetMessage $culture "Goodbye" "Default Goodbye")
+        LogInfo $byeMessage
+
+        #Get localized message for nb-NO
+        $culture = [System.Globalization.CultureInfo]::GetCultureInfo('nb-NO')
+        $helloMessage = (GetMessage $culture "Hello_F1" "Default Hello {0}") -f "Ola"        
+        LogInfo $helloMessage
+        $byeMessage = (GetMessage $culture "Goodbye" "Default Goodbye")
+        LogInfo $byeMessage
+
+        #Get localized message for sv-SE 
+        #Localized message file does not exist for sv-SE, so default message file will be used
+        $culture = [System.Globalization.CultureInfo]::GetCultureInfo('sv-SE')
+        $helloMessage = (GetMessage $culture "Hello_F1" "Default Hello {0}") -f "Ola"        
+        LogInfo $helloMessage
+        $byeMessage = (GetMessage $culture "Goodbye" "Default Goodbye")
+        LogInfo $byeMessage
+        
         SomeExampleUserFunctionThrowsError
     }
     Catch
