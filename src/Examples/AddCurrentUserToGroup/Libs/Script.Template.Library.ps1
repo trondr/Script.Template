@@ -1,4 +1,4 @@
-# Script.Template.Library 1.0.17052.2
+# Script.Template.Library 1.0.17060.3
 # 
 # Copyright (C) 2016-2017 github.com/trondr
 #
@@ -21,13 +21,34 @@ function ExecuteAction([scriptblock]$action)
     return $exitCode
 }
 
+$global:runningInIseChecked = $false
+$global:runningInIse = $false
+function RunningInIse
+{
+    if($global:runningInIseChecked -eq $false)
+    {
+        $variable = Get-Variable psISE -Scope Global -ErrorAction SilentlyContinue
+        if($variable -ne $null)
+        {
+            $global:runningInIse = $true
+        }
+        else
+        {
+            $global:runningInIse = $false
+        }
+        $global:runningInIseChecked = $true
+        Write-Verbose "Running in ISE: $($global:runningInIse)"
+    }
+    return $global:runningInIse
+}
+
 function LogInfo
 {
     param($message)
 
     if($logger.IsInfoEnabled)
     {
-        if($psISE -ne $null)
+        if(RunningInIse -eq $true)
         {
             Write-Host $message -BackgroundColor Green -ForegroundColor White
         }    
@@ -41,7 +62,7 @@ function LogWarning
 
     if($logger.IsWarnEnabled)
     {
-        if($psISE -ne $null)
+        if(RunningInIse -eq $true)
         {
             Write-Host $message -BackgroundColor Yellow -ForegroundColor Red
         }    
@@ -55,7 +76,7 @@ function LogError
 
     if($logger.IsErrorEnabled)
     {
-        if($psISE -ne $null)
+        if(RunningInIse -eq $true)
         {
             Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
         }    
@@ -69,7 +90,7 @@ function LogFatal
 
     if($logger.IsFatalEnabled)
     {
-        if($psISE -ne $null)
+        if(RunningInIse -eq $true)
         {
             Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
         }    
@@ -83,7 +104,7 @@ function LogDebug
 
     if($logger.IsDebugEnabled)
     {
-        if($psISE -ne $null)
+        if(RunningInIse -eq $true)
         {
             Write-Host $message -BackgroundColor Blue -ForegroundColor White
         }    
@@ -91,40 +112,71 @@ function LogDebug
     }    
 }
 
-
+$global:scriptFolder = [System.String]::Empty
 function GetScriptFolder
 {
-    $scriptFolder = Split-Path -Parent $global:script
-    Write-Verbose "ScriptFolder=$scriptFolder"
-    return $scriptFolder
+    if([System.String]::IsNullOrEmpty($global:scriptFolder) -eq $true)
+    {
+        $global:scriptFolder = Split-Path -Parent $global:script
+        Write-Verbose "ScriptFolder=$($global:scriptFolder)"
+    }    
+    return $global:scriptFolder
 }
 
+$global:remoteScriptFolder = [System.String]::Empty
 function GetRemoteScriptFolder
 {
-    $remoteScriptFolder = $env:ScriptFolder
-    Write-Verbose "From Environment (ScriptFolder): RemoteScriptFolder=$remoteScriptFolder"
-    return $remoteScriptFolder
+    if([System.String]::IsNullOrEmpty($global:remoteScriptFolder) -eq $true)
+    {
+        $global:remoteScriptFolder = $env:ScriptFolder
+        if([System.String]::IsNullOrEmpty($global:remoteScriptFolder) -eq $true)
+        {
+            Write-Host "WARNING. 'ScriptFolder' not set as environment variable." -ForegroundColor Yellow             
+        }
+        Write-Verbose "From Environment (ScriptFolder): RemoteScriptFolder=$($global:remoteScriptFolder)"        
+    }
+    return $global:remoteScriptFolder
 }
 
+$global:localScriptFolder = [System.String]::Empty
 function GetLocalScriptFolder
 {        
-    $localScriptFolder = $env:LocalScriptFolder
-    Write-Verbose "From Environment (LocalScriptFolder): LocalScriptFolder=$localScriptFolder"
+    if([System.String]::IsNullOrEmpty($global:localScriptFolder) -eq $true)
+    {
+        $global:localScriptFolder = $env:LocalScriptFolder
+        if([System.String]::IsNullOrEmpty($global:localScriptFolder) -eq $true)
+        {
+            Write-Host "WARNING. 'LocalScriptFolder' not set as environment variable." -ForegroundColor Yellow             
+        }
+        Write-Verbose "From Environment (LocalScriptFolder): LocalScriptFolder=$($global:localScriptFolder)"
+    }
     return $localScriptFolder
 }
 
+$global:scriptName = [System.String]::Empty
 function GetScriptName
 {
-    $scriptName = [System.IO.Path]::GetFileNameWithoutExtension($global:script)
-    Write-Verbose "ScriptName=$scriptName"
+    if([System.String]::IsNullOrEmpty($global:scriptName) -eq $true)
+    {
+        $global:scriptName = [System.IO.Path]::GetFileNameWithoutExtension($global:script)
+        Write-Verbose "ScriptName=$($global:scriptName)"    
+    }    
     return $scriptName
 }
 
+$global:remoteScriptName = [System.String]::Empty
 function GetRemoteScriptName
 {
-    $remoteScriptName = $env:ScriptName
-    Write-Verbose "From Environment (ScriptName): RemoteScriptName=$remoteScriptName"
-    return $remoteScriptName
+    if([System.String]::IsNullOrEmpty($global:remoteScriptName) -eq $true)
+    {
+        $global:remoteScriptName = $env:ScriptName
+        if([System.String]::IsNullOrEmpty($global:remoteScriptName) -eq $true)
+        {
+            Write-Host "WARNING. 'ScriptName' not set as environment variable." -ForegroundColor Yellow             
+        }
+        Write-Verbose "From Environment (ScriptName): RemoteScriptName=$($global:remoteScriptName)"
+    }
+    return $global:remoteScriptName
 }
 
 function LoadLibrary([string]$libraryFilePath)
@@ -162,6 +214,52 @@ function GetErrorMessage([int] $errorCode)
      $win32Exception = New-Object System.ComponentModel.Win32Exception -ArgumentList @(,$errorCode)
      $message = $win32Exception.Message
      return $message
+}
+
+$global:messagesFolder = [System.String]::Empty
+function GetMessagesFolder
+{
+    if([System.String]::IsNullOrEmpty($global:messagesFolder) -eq $true)
+    {
+        $scriptFolder = GetScriptFolder
+        $global:messagesFolder = [System.IO.Path]::Combine($scriptFolder,"Messages")
+        Write-Verbose "MessagesFolder=$($global:messagesFolder)"
+    }    
+    return $global:messagesFolder
+}
+
+function GetMessage
+{
+    param([System.Globalization.CultureInfo]$culture, [System.String]$messageKey, $defaultMessage)
+    
+    $oldCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture
+    $oldUiCulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture
+    try
+    {
+        [System.Threading.Thread]::CurrentThread.CurrentCulture = $culture
+        [System.Threading.Thread]::CurrentThread.CurrentUICulture = $culture        
+        $scriptName = GetScriptName
+        $messagesFolder = GetMessagesFolder      
+        $messageFileName =   "$($scriptName)Messages.psd1"
+        Import-LocalizedData -BaseDirectory "$messagesFolder" -BindingVariable messages -FileName $messageFileName 
+        if($messages.ContainsKey($messageKey) -eq $true)
+        {
+            return $messages.Get_Item($messageKey)
+        } 
+        else
+        {
+            if($logger.IsWarnEnabled)
+            {
+                $logger.Warn("Using defalt message '$defaultMessage' for non existing message key '$messageKey'")
+            }
+            return $defaultMessage
+        }
+    }
+    finally
+    {
+       [System.Threading.Thread]::CurrentThread.CurrentCulture = $oldCulture
+       [System.Threading.Thread]::CurrentThread.CurrentUICulture = $oldUiCulture
+    }
 }
 
 function GetAppConfig
