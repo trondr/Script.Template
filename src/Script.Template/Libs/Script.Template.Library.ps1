@@ -286,10 +286,13 @@ function GetLogFolder()
     {    
         $logFolder = [System.IO.Path]::Combine($remoteScriptFolder, "Logs");
     }
-    $scriptFolder = GetScriptFolder
-    if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($scriptFolder)))
-    {    
-        $logFolder = [System.IO.Path]::Combine($scriptFolder, "Logs");
+    else
+    {
+        $scriptFolder = GetScriptFolder
+        if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($scriptFolder)))
+        {    
+            $logFolder = [System.IO.Path]::Combine($scriptFolder, "Logs");
+        }
     }
     if( ([System.IO.Path]::IsPathRooted($logFolder)) -eq $false)
     {
