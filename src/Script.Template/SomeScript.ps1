@@ -1,4 +1,4 @@
-# Script.Template 1.0.17060.3
+# Script.Template 1.0.17061.4
 # 
 # Copyright (C) 2016-2017 github.com/trondr
 #
@@ -37,7 +37,7 @@ $global:storeLogFilesInPublicLogsFolder = $false
 #
 ###############################################################################
 
-$global:scriptVersion = "1.0.17060.3"
+$global:scriptVersion = "1.0.17061.4"
 
 function Run
 {    
