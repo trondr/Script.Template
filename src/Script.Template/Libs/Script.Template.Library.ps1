@@ -315,7 +315,8 @@ function GetLogFile()
 
 function GetLog4NetDll
 {
-    $log4NetDll = [System.IO.Path]::Combine([System.IO.Path]::Combine($global:scriptFolder,"Libs"),"log4net.dll")
+    $scriptFolder = GetScriptFolder
+    $log4NetDll = [System.IO.Path]::Combine([System.IO.Path]::Combine($scriptFolder,"Libs"),"log4net.dll")
     Write-Verbose "log4NetDll: $log4NetDll"
     return $log4NetDll
 }
