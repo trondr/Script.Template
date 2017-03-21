@@ -26,7 +26,7 @@ PowerShell script template
 ![](./doc/images/UserFunctions.png)
 4. To execute your script, run: YourScript.cmd "yourexampleparameter1" "yourexampleparameter2"  
 ![](./doc/images/YourScriptOutput.png)  
-5. Log file is located here: "%public%\Logs\YourScript\YourScript-%USERNAME%.log" or in "<ScriptFolder>\Logs\YourScript-%USERNAME%.log" depending on the boolean value of $global:storeLogFilesInPublicLogsFolder
+5. Log file is located here: "%public%\Logs\YourScript\YourScript-%USERNAME%.log" or in "...\YourScript\Logs\YourScript-%USERNAME%.log" depending on the boolean value of $global:storeLogFilesInPublicLogsFolder
 
 ## Examples
 
