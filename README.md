@@ -12,25 +12,21 @@ PowerShell script template
 
 ## Usage
 
-1. Copy template to new folder YourScript
-  1. Rename SomeScript.cmd -> YourScript.cmd
-  2. Rename SomeScript.config -> YourScript.config
-  3. Rename SomeScript.ps1 -> YourScript.ps1
-  4. Rename SomeScriptLibrary.ps1 -> YourScriptLibrary.ps1  
-  ![](./doc/images/CopyAndRenameTemplate.png)
-2. Rename any message files
-  1. Rename Messages\SomeScriptMessages.psd1 -> Messages\YourScriptMessages.psd1
-  2. Rename Messages\<culture>\SomeScriptMessages.psd1 -> Messages\<culture>\YourScriptMessages.psd1
-  ![](./doc/images/CopyAndRenameTemplate-Messages.png)
-3. Develop your code in the Run function in YourScript.ps1. 
+1. Run CreateNew.cmd  
+![](./doc/images/CreateNew.png)
+2. Enter script name  
+![](./doc/images/YourScript_Input.png)
+3. Script template is copied and  renamed into a folder with name you just entered  
+![](./doc/images/YourScript_Folder.png)
+2. Develop your code in the Run function in YourScript\YourScript.ps1.
   1. Make sure to return a relevant exit code. Exit code 0 is normally regarded as success.
   2. Also consider updating the script version.  
 ![](./doc/images/MainScript.png)
-4. Develop any user defined functions in YourScriptLibrary.ps1 to keep the main script clean  
+3. Develop any user defined functions in YourScriptLibrary.ps1 to keep the main script clean  
 ![](./doc/images/UserFunctions.png)
-5. To execute your script, run: YourScript.cmd "yourexampleparameter1" "yourexampleparameter2"  
+4. To execute your script, run: YourScript.cmd "yourexampleparameter1" "yourexampleparameter2"  
 ![](./doc/images/YourScriptOutput.png)  
-6. Log file is located here: "%public%\Logs\YourScript\YourScript-%USERNAME%.log" or in "<ScriptFolder>\Logs\YourScript-%USERNAME%.log" depending on the boolean value of $global:storeLogFilesInPublicLogsFolder
+5. Log file is located here: "%public%\Logs\YourScript\YourScript-%USERNAME%.log" or in "...\YourScript\Logs\YourScript-%USERNAME%.log" depending on the boolean value of $global:storeLogFilesInPublicLogsFolder
 
 ## Examples
 
@@ -39,3 +35,18 @@ This script supports adding current user to a specified Active Directory group
 
 * [SetWallPaperWithText.ps1](./src/Examples/SetWallPaperWithText)
 Write a text (spesified in a text file) to the copy of an image and then set the resulting image as wallpaper. The script uses a inline C# class utilizing the ImageMagick .NET library Magick.NET
+
+## Logging
+
+The script template utilize Log4Net to provide industry standard logging via the functions: LogInfo, LogWarning, LogError, LogDebug, LogFatal
+
+![](./doc/images/Logging_Functions.png)
+
+Default is logging to console (ColoredConsoleAppender) and logging to file (RollingFileAppender) enabled in the configuration file 'YourScript.config'.
+
+The configuration file can be modified with other appenders such as 
+
+* EventlogAppender for logging to Eventlog 
+* SmtpAppender for logging to mail. Typically you will in this case configure only fatal error messages to be sent by mail.
+
+Configuration of Log4Net appenders are described here: https://logging.apache.org/log4net/release/config-examples.html
