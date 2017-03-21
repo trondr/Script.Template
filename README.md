@@ -38,13 +38,15 @@ Write a text (spesified in a text file) to the copy of an image and then set the
 
 ## Logging
 
-The script template utilize Log4Net to provide industry standard logging.
+The script template utilize Log4Net to provide industry standard logging via the functions: LogInfo, LogWarning, LogError, LogDebug, LogFatal
 
-Default is logging to console (ColoredConsoleAppender) and logging to file (RollingFileAppender) enabled in the configuration file.
+![](./doc/images/Logging_Functions.png)
+
+Default is logging to console (ColoredConsoleAppender) and logging to file (RollingFileAppender) enabled in the configuration file 'YourScript.config'.
 
 The configuration file can be modified with other appenders such as 
 
 * EventlogAppender for logging to Eventlog 
-* SmtpAppender for loggin to mail. Typically you will in this case configure only fatal error messages to be sent by mail.
+* SmtpAppender for logging to mail. Typically you will in this case configure only fatal error messages to be sent by mail.
 
 Configuration of Log4Net appenders are described here: https://logging.apache.org/log4net/release/config-examples.html
