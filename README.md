@@ -19,7 +19,7 @@ PowerShell script template
 3. Script template is copied and  renamed into a folder with name you just entered  
 ![](./doc/images/YourScript_Folder.png)
 2. Develop your code in the Run function in YourScript\YourScript.ps1.
-  1. Make sure to return a relevant exit code. Exit code 0 is normally regarded as success.
+  1. Make sure to return a relevant exit code. Exit code 0 is normally regarded as success. For more information see System Error Codes:  https://msdn.microsoft.com/en-us/library/windows/desktop/ms681381(v=vs.85).aspx
   2. Also consider updating the script version.  
 ![](./doc/images/MainScript.png)
 3. Develop any user defined functions in YourScriptLibrary.ps1 to keep the main script clean  
