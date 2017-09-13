@@ -15,7 +15,7 @@ Set-StrictMode -Version Latest
 #   Powershell logging preference
 #
 ###############################################################################
-$global:VerbosePreference = "SilentlyContinue"
+$global:VerbosePreference = "Continue"
 $global:DebugPreference = "SilentlyContinue"
 $global:WarningPreference = "Continue"
 $global:ErrorActionPreference = "Continue"

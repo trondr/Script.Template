@@ -1,5 +1,5 @@
 @REM 
-@REM Copyright (C) 2016 github.com/trondr
+@REM Copyright (C) 2016-2017 github.com/trondr
 @REM
 @REM All rights reserved.
 @REM 
@@ -14,9 +14,9 @@
 @Echo ------------------------------------------------------------------------
 @Echo Start: Preparing to run powershell script
 @Echo ------------------------------------------------------------------------
-Set ScriptFolder=%~dp0
+Set BatchScriptFolder=%~dp0
 Set ScriptName=%~n0
-Set PowerShellScript=%ScriptFolder%%ScriptName%.ps1
+Set PowerShellScript=%BatchScriptFolder%Script\%ScriptName%.ps1
 @Echo PowerShellScript=%PowerShellScript%
 REM @Echo Verifying that powershell script "%PowerShellScript%" exists
 IF EXIST "%PowerShellScript%" ( 
@@ -25,15 +25,15 @@ IF EXIST "%PowerShellScript%" (
 		@Echo Powershell script was not found
 		Goto MISSINGPOWERSHELLSCRIPT
 	)
-@Set LocalScriptFolder=%TEMP%\Script.Template.%ScriptName%
-@Echo Copy Powershell script and libraries to local folder: %LocalScriptFolder%
-REM @Echo XCOPY "%ScriptFolder%" "%LocalScriptFolder%" /S /I /Q /Y
-XCOPY "%ScriptFolder%*.*" "%LocalScriptFolder%" /S /I /Q /Y
+@Set LocalBatchScriptFolder=%TEMP%\Script.Template.%ScriptName%
+@Echo Copy Powershell script and libraries to local folder: %LocalBatchScriptFolder%
+REM @Echo XCOPY "%BatchScriptFolder%" "%LocalBatchScriptFolder%" /S /I /Q /Y
+XCOPY "%BatchScriptFolder%*.*" "%LocalBatchScriptFolder%" /S /I /Q /Y
 
 @Echo ------------------------------------------------------------------------
 @Echo Run Powershell script from local directory
 @Echo ------------------------------------------------------------------------
-@Set LocalPowershellScript=%LocalScriptFolder%\%ScriptName%.ps1
+@Set LocalPowershellScript=%LocalBatchScriptFolder%\Script\%ScriptName%.ps1
 REM @Echo Verifying that local powershell script "%LocalPowershellScript%" exists
 IF EXIST "%LocalPowershellScript%" ( 
 		REM @Echo Powershell script was found
@@ -47,10 +47,10 @@ Powershell.exe -ExecutionPolicy Unrestricted -NonInteractive -NoProfile -Command
 @Echo Powershell script exited with exitcode %EXITCODE%
 
 :CLEANUP
-IF "%LocalScriptFolder%" NEQ "" (
-		@Echo Cleaning up local directory: %LocalScriptFolder%
-		REM @Echo RD "%LocalScriptFolder%" /S /Q
-		RD "%LocalScriptFolder%" /S /Q
+IF "%LocalBatchScriptFolder%" NEQ "" (
+		@Echo Cleaning up local directory: %LocalBatchScriptFolder%
+		REM @Echo RD "%LocalBatchScriptFolder%" /S /Q
+		RD "%LocalBatchScriptFolder%" /S /Q
 	) ELSE (
 		@Echo Failed to cleanup local directory
 	)

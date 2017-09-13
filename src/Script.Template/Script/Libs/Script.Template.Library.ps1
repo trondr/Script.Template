@@ -123,19 +123,19 @@ function GetScriptFolder
     return $global:scriptFolder
 }
 
-$global:remoteScriptFolder = [System.String]::Empty
-function GetRemoteScriptFolder
+$global:remoteBatchScriptFolder = [System.String]::Empty
+function GetRemoteBatchScriptFolder
 {
-    if([System.String]::IsNullOrEmpty($global:remoteScriptFolder) -eq $true)
+    if([System.String]::IsNullOrEmpty($global:remoteBatchScriptFolder) -eq $true)
     {
-        $global:remoteScriptFolder = $env:ScriptFolder
-        if([System.String]::IsNullOrEmpty($global:remoteScriptFolder) -eq $true)
+        $global:remoteBatchScriptFolder = $env:BatchScriptFolder
+        if([System.String]::IsNullOrEmpty($global:remoteBatchScriptFolder) -eq $true)
         {
             Write-Host "WARNING. 'ScriptFolder' not set as environment variable." -ForegroundColor Yellow             
         }
-        Write-Verbose "From Environment (ScriptFolder): RemoteScriptFolder=$($global:remoteScriptFolder)"        
+        Write-Verbose "From Environment (BatchScriptFolder): remoteBatchScriptFolder=$($global:remoteBatchScriptFolder)"        
     }
-    return $global:remoteScriptFolder
+    return $global:remoteBatchScriptFolder
 }
 
 $global:localScriptFolder = [System.String]::Empty
@@ -281,10 +281,10 @@ function GetLogFolder()
 {
     $scriptName = GetScriptName
     $logFolder = [System.IO.Path]::Combine([System.IO.Path]::Combine($env:Public, "Logs"), $scriptName);
-    $remoteScriptFolder = GetRemoteScriptFolder
-    if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($remoteScriptFolder)))
+    $remoteBatchScriptFolder = GetRemoteBatchScriptFolder
+    if(($storeLogFilesInPublicLogsFolder -eq $false) -and (![string]::IsNullOrEmpty($remoteBatchScriptFolder)))
     {    
-        $logFolder = [System.IO.Path]::Combine($remoteScriptFolder, "Logs");
+        $logFolder = [System.IO.Path]::Combine($remoteBatchScriptFolder, "Logs");
     }
     else
     {
